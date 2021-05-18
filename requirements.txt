@@ -1,0 +1,6 @@
+boto3==1.17.48
+mysql-connector-python==8.0.23
+
+# Zoopla packages
+--extra-index-url https://pypi.zoopla.co.uk/pypi/
+vmp-utils==0.4.0
