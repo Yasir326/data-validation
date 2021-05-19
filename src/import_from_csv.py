@@ -29,8 +29,9 @@ insert_data()
 
 
 def output_non_matches():
+    f = open('src/files/output.csv', 'w')
     output = csv.DictWriter(
-        sys.stdout, fieldnames=["id", "gdpr_name", "master_name", "location"]
+        f, fieldnames=["id", "gdpr_name", "master_name", "location"]
     )
     output.writeheader()
     with open(gdpr_file_csv, newline="") as csvfile:
