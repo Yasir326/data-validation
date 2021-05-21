@@ -1,10 +1,6 @@
 import csv
 import sqlite3
 import os
-from pathlib import Path
-
-dir = Path("/Users/yasirk/data_validation")
-
 
 master_file = "src/files/main_offline_validation.xlsx"
 master_file_csv = "src/files/main_offline_validation.csv"
@@ -17,7 +13,7 @@ def create_connection():
         connection = sqlite3.connect("members_data.db")
         cursor = connection.cursor()
         cursor.execute(
-            "CREATE TABLE IF NOT EXISTS  members(id, name, branch)"
+            "CREATE TABLE IF NOT EXISTS  members(aims, name, jamaat)"
         )
         return connection
     except sqlite3.Error as e:
@@ -41,7 +37,7 @@ def insert_data():
                     f"✅ Successfully inserted {header[0]} {header[1]} {header[5]} data to database"
                 )
     except sqlite3.Error as e:
-        exit(f"❌ ERROR: {e}")
+        exit(f"❌ ERROR in insert_data(): {e}")
 
 
 insert_data()
@@ -51,7 +47,7 @@ def output_non_matches():
     with create_connection() as connection:
         f = open(output_csv, 'w')
     output = csv.DictWriter(
-        f, fieldnames=["id", "gdpr_name", "master_name", "location"]
+        f, fieldnames=["aims", "gdpr_name", "master_name", "jamaat"]
     )
     output.writeheader()
     with open(gdpr_file_csv, newline="") as csvfile:
@@ -59,29 +55,29 @@ def output_non_matches():
         cursor = connection.cursor()
 
         for row in reader:
-            id, gdpr_name = row[0], row[2]
+            aims, gdpr_name = row[0], row[2]
             try:
                 cursor.execute(
-                    "SELECT name, branch FROM members WHERE id = ? AND name <> ?",
-                    (id, gdpr_name),
+                    "SELECT name, jamaat FROM members WHERE aims = ? AND name <> ?",
+                    (aims, gdpr_name),
                 )
             except sqlite3.Error as e:
-                exit(f"❌ ERROR: {e}")
+                exit(f"❌ ERROR in output_non_matches: {e}")
 
             result = cursor.fetchone()
             if result is not None:
                 output.writerow(
                     {
-                        "id": id,
+                        "aims": aims,
                         "gdpr_name": gdpr_name,
                         "master_name": result[0],
-                        "location": result[1],
+                        "jamaat": result[1],
                     }
                 )
-                print(
-                    f"✅ Successfully outputted mismatches to out.csv"
-                )
+        print(
+            f"✅ Successfully outputted mismatches to out.csv"
+        )
 
 
 output_non_matches()
-os.remove("/members_data.db")
+os.remove("/Users/yasirk/data_validation/members_data.db")
