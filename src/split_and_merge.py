@@ -18,7 +18,9 @@ def return_csv_file():
             "❌ folder name must be personal-data or waqfe-nau"
         )
     else:
-        csv_file = set_home_path(os.path.join(folder_name, 'combined_csv.csv'))
+        files_path = set_home_path(folder_name)
+        csv_file = os.path.join(files_path, 'combined_csv.csv')
+        os.chdir(files_path)
 
     return csv_file
 
@@ -40,4 +42,7 @@ def split_csv():
     )
 
 
-split_csv()
+# Adjust under 13 csv to match data in over 13 csv
+
+# Create new CSV with just aims and name
+# Delete the additional CSVs
