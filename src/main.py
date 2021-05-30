@@ -1,10 +1,11 @@
 import csv
 import sqlite3
 import os
+import sys
 
 master_file = "src/files/main_offline_validation.xlsx"
 master_file_csv = "src/files/main_offline_validation.csv"
-gdpr_file_csv = "src/files/AMA-UK-–-WASAYA-PERSONAL-DATA-CONSENT-FORM-FOR-AMJ-INTERNATIONAL-1620046642.csv"
+gdpr_file_csv = "src/files/" + sys.argv[1] + ".csv"
 output_csv = "src/files/output.csv"
 
 
@@ -55,7 +56,10 @@ def output_non_matches():
         cursor = connection.cursor()
 
         for row in reader:
-            aims, gdpr_name = row[0], row[2]
+            if "AMA-UK-–-WASAYA" in gdpr_file_csv:
+                aims, gdpr_name = row[0], row[2]
+            else:
+                aims, gdpr_name = row[1], row[3]
             try:
                 cursor.execute(
                     "SELECT name, jamaat FROM members WHERE aims = ? AND name <> ?",
