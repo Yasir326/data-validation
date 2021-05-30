@@ -1,8 +1,8 @@
 import os
 import glob
 import sys
-import earthpy as et
 import pandas as pd
+from helpers.set_home_path import set_home_path
 from pandas.core.groupby.groupby import DataError
 
 '''
@@ -10,22 +10,13 @@ This module takes all csv files in a given folder (which is passed as an argumen
 and combines them into a single csv called 'combined_csv.csv' file within the same folder
 '''
 
-home_path = et.io.HOME
 folder_name = sys.argv[1]
 
-
-# Find home directory
-def set_home_path(home_path):
-    if not os.path.exists(home_path):
-        exit("❌ Home path does not exist")
-    files_path = os.path.join(home_path, "data_validation",
-                              "src", "files", folder_name)
-    return files_path
-
-
 # combine all csv files in csv folder
+
+
 def get_all_csv_files():
-    files_path = set_home_path(home_path)
+    files_path = set_home_path(folder_name)
 
     if not os.path.exists(files_path):
         exit("❌ File path does not exist")
@@ -47,3 +38,6 @@ def combine_csv_files():
         )
     except DataError as e:
         exit(f"❌ Error occurred, unable to combine csv files due to: {e}")
+
+
+combine_csv_files()
