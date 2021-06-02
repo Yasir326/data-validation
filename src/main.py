@@ -13,9 +13,7 @@ def create_connection():
     try:
         connection = sqlite3.connect("members_data.db")
         cursor = connection.cursor()
-        cursor.execute(
-            "CREATE TABLE IF NOT EXISTS  members(aims, name, jamaat)"
-        )
+        cursor.execute("CREATE TABLE IF NOT EXISTS  members(aims, name, jamaat)")
         return connection
     except sqlite3.Error as e:
         exit(f"❌ ERROR: {e}")
@@ -24,7 +22,7 @@ def create_connection():
 def insert_data():
     try:
         with create_connection() as connection:
-            f = open(output_csv, '+r')
+            f = open(output_csv, "+r")
             with open(master_file_csv, newline="") as csvfile:
                 reader = csv.reader(csvfile)
                 header = next(reader)
@@ -46,7 +44,7 @@ insert_data()
 
 def output_non_matches():
     with create_connection() as connection:
-        f = open(output_csv, 'w')
+        f = open(output_csv, "w")
     output = csv.DictWriter(
         f, fieldnames=["aims", "gdpr_name", "master_name", "jamaat"]
     )
@@ -78,9 +76,7 @@ def output_non_matches():
                         "jamaat": result[1],
                     }
                 )
-        print(
-            f"✅ Successfully outputted mismatches to out.csv"
-        )
+        print(f"✅ Successfully outputted mismatches to out.csv")
 
 
 output_non_matches()
