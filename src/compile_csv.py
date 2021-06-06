@@ -38,6 +38,3 @@ def combine_csv_files():
         )
     except DataError as e:
         exit(f"❌ Error occurred, unable to combine csv files due to: {e}")
-
-
-combine_csv_files()

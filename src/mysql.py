@@ -1,29 +1,24 @@
-import csv
 import sqlite3
-import os
-import sys
-
-master_file = "src/files/main_offline_validation.xlsx"
-master_file_csv = "src/files/main_offline_validation.csv"
-gdpr_file_csv = "src/files/" + sys.argv[1] + ".csv"
-output_csv = "src/files/output.csv"
+import csv
 
 
 def create_connection():
     try:
         connection = sqlite3.connect("members_data.db")
         cursor = connection.cursor()
-        cursor.execute("CREATE TABLE IF NOT EXISTS  members(aims, name, jamaat)")
+        cursor.execute(
+            "CREATE TABLE IF NOT EXISTS  members(aims, name, jamaat)")
         return connection
     except sqlite3.Error as e:
         exit(f"❌ ERROR: {e}")
 
 
-def insert_data():
+def insert_data(output_csv, master_aims_file):
+    insert_failures = False
     try:
         with create_connection() as connection:
             f = open(output_csv, "+r")
-            with open(master_file_csv, newline="") as csvfile:
+            with open(master_aims_file, newline="") as csvfile:
                 reader = csv.reader(csvfile)
                 header = next(reader)
                 cursor = connection.cursor()
@@ -36,13 +31,13 @@ def insert_data():
                     f"✅ Successfully inserted {header[0]} {header[1]} {header[5]} data to database"
                 )
     except sqlite3.Error as e:
+        insert_failures = True
         exit(f"❌ ERROR in insert_data(): {e}")
+    return insert_failures
 
 
-insert_data()
-
-
-def output_non_matches():
+def output_non_matches(output_csv, gdpr_file_csv):
+    output_failures = False
     with create_connection() as connection:
         f = open(output_csv, "w")
     output = csv.DictWriter(
@@ -64,6 +59,7 @@ def output_non_matches():
                     (aims, gdpr_name),
                 )
             except sqlite3.Error as e:
+                output_failures = True
                 exit(f"❌ ERROR in output_non_matches: {e}")
 
             result = cursor.fetchone()
@@ -77,7 +73,4 @@ def output_non_matches():
                     }
                 )
         print(f"✅ Successfully outputted mismatches to out.csv")
-
-
-output_non_matches()
-os.remove("/Users/yasirk/data_validation/members_data.db")
+        return output_failures

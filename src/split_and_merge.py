@@ -1,7 +1,9 @@
+from posixpath import split
 import sys
 import os
 import csv
 import pandas as pd
+from compile_csv import combine_csv_files
 from helpers.helper_methods import set_home_path, does_file_exist
 from pandas.core.groupby.groupby import DataError
 
@@ -12,10 +14,11 @@ It then combines the files again and ensures that all the headers and rows are t
 Should ONLY be used for the combined_csv.csv in the personal-data and waqfe-nau folders
 """
 folder_name = sys.argv[1]
+files_to_delete = []
 
 
 def return_csv_file(filename):
-    if folder_name != "personal-data" or folder_name is "waqfe-nau":
+    if (folder_name != "personal-data") and (folder_name != "waqfe-nau"):
         exit("❌ folder name must be personal-data or waqfe-nau")
     else:
         files_path = set_home_path(folder_name)
@@ -27,6 +30,7 @@ def return_csv_file(filename):
 
 def split_csv():
     csv_file = return_csv_file("combined_csv.csv")
+    files_to_delete.append("combined_csv.csv")
     data = pd.read_csv(csv_file)
     age_group = data["Age Group"].unique()
     age_group = age_group.tolist()
@@ -44,10 +48,11 @@ def split_csv():
 
 # Adjust under 13 csv to match data in over 13 csv
 def adjust_under13s_csv():
-    f = does_file_exist(return_csv_file("output.csv"))
+    f = does_file_exist(return_csv_file(f"{folder_name}_output.csv"))
     output = csv.DictWriter(f, fieldnames=["aims", "name"])
     output.writeheader()
     unders_13s = return_csv_file("age_group_Under 13.csv")
+    files_to_delete.append("age_group_Under 13.csv")
 
     with open(unders_13s, newline="") as f:
         reader = csv.DictReader(f)
@@ -67,10 +72,42 @@ def adjust_under13s_csv():
                 exit(
                     f"❌ Error occurred, unable to write to output.csv files due to: {e}"
                 )
-    print("✅ Successfully aims and name to output.csv")
-
-    # Create new CSV with just aims and name
-    # Delete the additional CSVs
+    print("✅ Successfully added under 13s aims and name to output.csv")
 
 
-adjust_under13s_csv()
+def append_over13s_to_output():
+    f = does_file_exist(return_csv_file(f"{folder_name}_output.csv"))
+    output = csv.DictWriter(f, fieldnames=["aims", "name"])
+    over_13s = return_csv_file("age_group_13 and over.csv")
+    files_to_delete.append("age_group_13 and over.csv")
+
+    with open(over_13s, newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            aims, name = (
+                row["Adult-AIMS (MEMBERSHIP) ID"],
+                row["Adult-YOUR FULL NAME (First)"],
+            )
+            try:
+                output.writerow(
+                    {
+                        "aims": int(float(aims)),
+                        "name": name,
+                    }
+                )
+            except csv.Error as e:
+                exit(
+                    f"❌ Error occurred, unable to write to output.csv files due to: {e}"
+                )
+
+    print("✅ Successfully appended over13s aims and name to output.csv")
+
+
+def final_merged_file():
+    combine_csv_files()
+    split_csv()
+    adjust_under13s_csv()
+    append_over13s_to_output()
+
+    for i in range(len(files_to_delete)):
+        os.remove(files_to_delete[i])
