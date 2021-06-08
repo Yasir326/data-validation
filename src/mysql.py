@@ -6,18 +6,16 @@ def create_connection():
     try:
         connection = sqlite3.connect("members_data.db")
         cursor = connection.cursor()
-        cursor.execute(
-            "CREATE TABLE IF NOT EXISTS  members(aims, name, jamaat)")
+        cursor.execute("CREATE TABLE IF NOT EXISTS  members(aims, name, jamaat)")
         return connection
     except sqlite3.Error as e:
         exit(f"❌ ERROR: {e}")
 
 
-def insert_data(output_csv, master_aims_file):
+def insert_data(master_aims_file):
     insert_failures = False
     try:
         with create_connection() as connection:
-            f = open(output_csv, "+r")
             with open(master_aims_file, newline="") as csvfile:
                 reader = csv.reader(csvfile)
                 header = next(reader)

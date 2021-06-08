@@ -3,15 +3,15 @@ import sys
 import os
 import csv
 import pandas as pd
-from compile_csv import combine_csv_files
-from helpers.helper_methods import set_home_path, does_file_exist
+from src.compile_csv import combine_csv_files
+from src.helpers.helper_methods import set_home_path, does_file_exist
 from pandas.core.groupby.groupby import DataError
 
 """
-This module takes the combined_csv.csv file which is created by the compile_csv.py module and
+This module takes the combined-csv.csv file which is created by the compile_csv.py module and
 splits them into two csv files based on whetherthe Jamaat member is under or over 13.
 It then combines the files again and ensures that all the headers and rows are the same.
-Should ONLY be used for the combined_csv.csv in the personal-data and waqfe-nau folders
+Should ONLY be used for the combined-csv.csvsv.csv in the personal-data and waqfe-nau folders
 """
 folder_name = sys.argv[1]
 files_to_delete = []
@@ -29,8 +29,8 @@ def return_csv_file(filename):
 
 
 def split_csv():
-    csv_file = return_csv_file("combined_csv.csv")
-    files_to_delete.append("combined_csv.csv")
+    csv_file = return_csv_file(f"{folder_name}-combined-csv.csv")
+    files_to_delete.append(f"{folder_name}-combined-csv.csv")
     data = pd.read_csv(csv_file)
     age_group = data["Age Group"].unique()
     age_group = age_group.tolist()
@@ -42,13 +42,13 @@ def split_csv():
             )
         except DataError as e:
             exit(f"❌ Error occurred, unable to combine csv files due to: {e}")
-    print(
-        f"✅ Successfully split {age_group[0]} and {age_group[1]} into separate files")
+    print(f"✅ Successfully split {age_group[0]} and {age_group[1]} into separate files")
+    os.remove(csv_file)
 
 
 # Adjust under 13 csv to match data in over 13 csv
 def adjust_under13s_csv():
-    f = does_file_exist(return_csv_file(f"{folder_name}_output.csv"))
+    f = does_file_exist(return_csv_file(f"{folder_name}-combined-csv.csv"))
     output = csv.DictWriter(f, fieldnames=["aims", "name"])
     output.writeheader()
     unders_13s = return_csv_file("age_group_Under 13.csv")
@@ -76,7 +76,7 @@ def adjust_under13s_csv():
 
 
 def append_over13s_to_output():
-    f = does_file_exist(return_csv_file(f"{folder_name}_output.csv"))
+    f = does_file_exist(return_csv_file(f"{folder_name}-combined-csv.csv"))
     output = csv.DictWriter(f, fieldnames=["aims", "name"])
     over_13s = return_csv_file("age_group_13 and over.csv")
     files_to_delete.append("age_group_13 and over.csv")
@@ -97,7 +97,7 @@ def append_over13s_to_output():
                 )
             except csv.Error as e:
                 exit(
-                    f"❌ Error occurred, unable to write to output.csv files due to: {e}"
+                    f"❌ Error occurred, unable to write to {folder_name}-combined-csv.csv files due to: {e}"
                 )
 
     print("✅ Successfully appended over13s aims and name to output.csv")
