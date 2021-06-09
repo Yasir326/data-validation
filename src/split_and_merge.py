@@ -30,7 +30,6 @@ def return_csv_file(filename):
 
 def split_csv():
     csv_file = return_csv_file(f"{folder_name}-combined-csv.csv")
-    files_to_delete.append(f"{folder_name}-combined-csv.csv")
     data = pd.read_csv(csv_file)
     age_group = data["Age Group"].unique()
     age_group = age_group.tolist()
@@ -42,7 +41,8 @@ def split_csv():
             )
         except DataError as e:
             exit(f"❌ Error occurred, unable to combine csv files due to: {e}")
-    print(f"✅ Successfully split {age_group[0]} and {age_group[1]} into separate files")
+    print(
+        f"✅ Successfully split {age_group[0]} and {age_group[1]} into separate files")
     os.remove(csv_file)
 
 
