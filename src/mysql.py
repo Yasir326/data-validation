@@ -10,8 +10,7 @@ def create_connection():
     try:
         connection = sqlite3.connect("members_data.db")
         cursor = connection.cursor()
-        cursor.execute(
-            "CREATE TABLE IF NOT EXISTS  members(aims, name, jamaat)")
+        cursor.execute("CREATE TABLE IF NOT EXISTS  members(aims, name, jamaat)")
         return connection
     except sqlite3.Error as e:
         exit(f"❌ ERROR: {e}")

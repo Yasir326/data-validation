@@ -41,8 +41,7 @@ def split_csv():
             )
         except DataError as e:
             exit(f"❌ Error occurred, unable to combine csv files due to: {e}")
-    print(
-        f"✅ Successfully split {age_group[0]} and {age_group[1]} into separate files")
+    print(f"✅ Successfully split {age_group[0]} and {age_group[1]} into separate files")
     os.remove(csv_file)
 
 
