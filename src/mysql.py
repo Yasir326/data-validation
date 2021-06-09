@@ -10,7 +10,8 @@ def create_connection():
     try:
         connection = sqlite3.connect("members_data.db")
         cursor = connection.cursor()
-        cursor.execute("CREATE TABLE IF NOT EXISTS  members(aims, name, jamaat)")
+        cursor.execute(
+            "CREATE TABLE IF NOT EXISTS  members(aims, name, jamaat)")
         return connection
     except sqlite3.Error as e:
         exit(f"❌ ERROR: {e}")
@@ -74,5 +75,5 @@ def output_non_matches(output_csv, gdpr_file_csv):
                         "jamaat": result[1],
                     }
                 )
-        print(f"✅ Successfully outputted mismatches to out.csv")
+        print(f"✅ Successfully outputted mismatches to {output_csv}")
         return output_failures
