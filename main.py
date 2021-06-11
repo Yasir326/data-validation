@@ -33,7 +33,8 @@ if __name__ == "__main__":
             "⚠️ There were errors in inserting data into database, read above for more info"
         )
 
-    output_failures = output_non_matches(f"{folder_name}-mismatches.csv", gdpr_file_csv)
+    output_failures = output_non_matches(
+        f"{folder_name}-mismatches.csv", gdpr_file_csv)
 
     if output_failures:
         print(
