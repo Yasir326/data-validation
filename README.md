@@ -29,5 +29,5 @@ pip install -r requirements.txt
 You can run the program with:
 
 ```bash
-python main.py ${folder_name}
+python main.py ${folder_name} ${match_type}
 ```
