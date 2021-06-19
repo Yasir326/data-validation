@@ -30,7 +30,7 @@ def configure_master_and_gdpr_files(folder_name):
         "src",
         "files",
         folder_name,
-        f"{folder_name}-combined-csv.csv",
+        f"{folder_name}.csv",
     )
 
     return master_aims_file, gdpr_file_csv
