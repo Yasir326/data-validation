@@ -11,8 +11,7 @@ def create_connection():
     try:
         connection = sqlite3.connect("members_data.db")
         cursor = connection.cursor()
-        cursor.execute(
-            "CREATE TABLE IF NOT EXISTS  members(aims, name, jamaat)")
+        cursor.execute("CREATE TABLE IF NOT EXISTS  members(aims, name, jamaat)")
         return connection
     except sqlite3.Error as e:
         exit(f"❌ ERROR: {e}")
@@ -75,18 +74,20 @@ def output_non_matches(output_csv, gdpr_file_csv):
                     row[8],
                 )
             try:
-                if match_type == 'mismatches':
+                if match_type == "mismatches":
                     cursor.execute(
                         "SELECT name, jamaat FROM members WHERE aims = ? AND name <> ?",
                         (aims, gdpr_name),
                     )
-                elif match_type == 'matches':
+                elif match_type == "matches":
                     cursor.execute(
                         "SELECT name, jamaat FROM members WHERE aims = ? AND name = ?",
                         (aims, gdpr_name),
                     )
                 else:
-                    exit(f"❌ {match_type} is an incorrect argument, please use 'mismatches' or 'matches'")  
+                    exit(
+                        f"❌ {match_type} is an incorrect argument, please use 'mismatches' or 'matches'"
+                    )
             except sqlite3.Error as e:
                 output_failures = True
                 exit(f"❌ ERROR in output_non_matches: {e}")

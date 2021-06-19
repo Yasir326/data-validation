@@ -2,8 +2,6 @@ import os
 import earthpy as et
 import sys
 from src.mysql import insert_data, output_non_matches
-from src.compile_csv import combine_csv_files
-from src.split_and_merge import final_merged_file
 from src.helpers.helper_methods import set_home_path, configure_master_and_gdpr_files
 
 home_path = et.io.HOME
@@ -12,18 +10,26 @@ match_type = sys.argv[2]
 
 
 master_aims_file, gdpr_file_csv = configure_master_and_gdpr_files(folder_name)
+folder_list = [
+    "personal-data-adult",
+    "personal-data-child",
+    "rishta-nata",
+    "waqfe-nau-adult",
+    "waqfe-nau-child",
+    "wasiyat",
+]
 
 
 if __name__ == "__main__":
-    # print("🏁 Finding names which do not match aims in master aims file")
-    # if (folder_name == "personal-data") or (folder_name == "waqfe-nau"):
-    #     final_merged_file()
-    # elif (folder_name == "wasiyat") or (folder_name == "rishta-nata"):
-    #     combine_csv_files()
-    # else:
-    #     exit(
-    #         "❌ Incorrect data type selected please enter one of the following: personal-data, waqfe-nau, wasiyat or rishta-nata"
-    #     )
+    print("🏁 Finding {match_type} between GDPR file and  Master AIMS file")
+    if folder_name not in folder_list:
+        exit(
+            f"❌ Incorrect data type selected please enter one of the following: {folder_list}"
+        )
+    if match_type != "matches" and match_type != "mismatches":
+        exit(
+            "❌ Incorrect match type selected please enter one of the following: matches or mismatches"
+        )
 
     files_path = set_home_path(folder_name)
     os.chdir(files_path)
@@ -34,7 +40,9 @@ if __name__ == "__main__":
             "⚠️ There were errors in inserting data into database, read above for more info"
         )
 
-    output_failures = output_non_matches(f"{folder_name}-{match_type}.csv", gdpr_file_csv)
+    output_failures = output_non_matches(
+        f"{folder_name}-{match_type}.csv", gdpr_file_csv
+    )
 
     if output_failures:
         print(
