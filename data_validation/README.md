@@ -4,7 +4,7 @@ Validation program which checks GDPR Data with the Master AIMS Data.
 
 ## Introduction
 
-This program takes files in a given folder (`personal-data-child`,`personal-data-adult`, `rishta-nata`,`waqfe-nau-adult`, `waqfe-nau-adult`,`wasiyat`) and finds `aims` and `name` which either match or do not match with the master AIMS Data and generates a file with the matches or mismatches as well as their location.
+This program takes files in a given folder (`personal-data-child`,`personal-data-adult`, `rishta-nata`,`waqfe-nau-adult`, `waqfe-nau-child`,`wasiyat`) and finds `aims` and `name` which either match or do not match with the master AIMS Data and generates a file with the matches or mismatches as well as their location.
 
 ## Getting Started
 
@@ -37,7 +37,7 @@ The `folder_name` can be one of the following:
 * `personal-data-adult`
 * `rishta-nata`
 * `waqfe-nau-adult`
-* `waqfe-nau-adult`
+* `waqfe-nau-child`
 * `wasiyat`
 
 The `match_type` can be one of the following:

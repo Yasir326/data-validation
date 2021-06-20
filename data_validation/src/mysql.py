@@ -21,7 +21,7 @@ def insert_data(master_aims_file):
     insert_failures = False
     try:
         with create_connection() as connection:
-            with open(master_aims_file, newline="") as csvfile:
+            with open(master_aims_file, newline="", encoding="latin1") as csvfile:
                 reader = csv.reader(csvfile)
                 header = next(reader)
                 cursor = connection.cursor()
