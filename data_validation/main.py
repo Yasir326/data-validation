@@ -1,15 +1,12 @@
 import os
-import earthpy as et
-import sys
 from src.mysql import insert_data, output_non_matches
-from src.helpers.helper_methods import set_home_path, configure_master_and_gdpr_files
+from src.helpers.helper_methods import (
+    set_home_path,
+    configure_master_and_gdpr_files,
+    return_file_and_match_type,
+)
 
-home_path = et.io.HOME
-folder_name = sys.argv[1]
-match_type = sys.argv[2]
 
-
-master_aims_file, gdpr_file_csv = configure_master_and_gdpr_files(folder_name)
 folder_list = [
     "personal-data-adult",
     "personal-data-child",
@@ -22,6 +19,10 @@ folder_list = [
 
 if __name__ == "__main__":
     print("🏁 Finding {match_type} between GDPR file and  Master AIMS file")
+
+    folder_name, match_type = return_file_and_match_type()
+    master_aims_file, gdpr_file_csv = configure_master_and_gdpr_files(folder_name)
+
     if folder_name not in folder_list:
         exit(
             f"❌ Incorrect data type selected please enter one of the following: {folder_list}"
@@ -41,7 +42,7 @@ if __name__ == "__main__":
         )
 
     output_failures = output_non_matches(
-        f"{folder_name}-{match_type}.csv", gdpr_file_csv
+        f"{folder_name}-{match_type}.csv", gdpr_file_csv, folder_name, match_type
     )
 
     if output_failures:
@@ -49,7 +50,6 @@ if __name__ == "__main__":
             "⚠️ There were errors in finding non matching data, read above for more info"
         )
     os.remove(os.path.join(files_path, "members_data.db"))
-    # os.remove(os.path.join(files_path, f"{folder_name}-combined-csv.csv"))
     exit(
-        f"✅ mismatches found and have been outputted to {folder_name}-mismatches.csv in the {folder_name} folder"
+        f"✅ {match_type} found and have been outputted to {folder_name}-{match_type}.csv in the {folder_name} folder"
     )

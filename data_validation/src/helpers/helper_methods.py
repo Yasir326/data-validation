@@ -1,11 +1,18 @@
 import os
+import sys
 import earthpy as et
 
 
-home_path = et.io.HOME
+def return_home_path():
+    return et.io.HOME
+
+
+def return_file_and_match_type():
+    return sys.argv[1], sys.argv[2]
 
 
 def set_home_path(folder_name):
+    home_path = return_home_path()
     if not os.path.exists(home_path):
         exit("❌ Home path does not exist")
     files_path = os.path.join(
@@ -23,6 +30,7 @@ def does_file_exist(filename):
 
 
 def configure_master_and_gdpr_files(folder_name):
+    home_path = return_home_path()
     master_aims_file = os.path.join(
         home_path, "data_validation", "data_validation", "src", "files", "aims-data.csv"
     )

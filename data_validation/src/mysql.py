@@ -3,9 +3,6 @@ import csv
 import sys
 from src.helpers.helper_methods import does_file_exist
 
-folder_name = sys.argv[1]
-match_type = sys.argv[2]
-
 
 def create_connection():
     try:
@@ -39,7 +36,7 @@ def insert_data(master_aims_file):
     return insert_failures
 
 
-def output_non_matches(output_csv, gdpr_file_csv):
+def output_non_matches(output_csv, gdpr_file_csv, folder_name, match_type):
     output_failures = False
     with create_connection() as connection:
         f = does_file_exist(output_csv)
