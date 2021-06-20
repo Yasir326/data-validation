@@ -1,5 +1,6 @@
 import os
 from src.mysql import insert_data, output_non_matches
+from src.helpers.split_files import split_csv
 from src.helpers.helper_methods import (
     set_home_path,
     configure_master_and_gdpr_files,
@@ -49,7 +50,8 @@ if __name__ == "__main__":
         print(
             "⚠️ There were errors in finding non matching data, read above for more info"
         )
+    split_csv()
     os.remove(os.path.join(files_path, "members_data.db"))
     exit(
-        f"✅ {match_type} found and have been outputted to {folder_name}-{match_type}.csv in the {folder_name} folder"
+        f"✅ {match_type} found and outputted to {folder_name}-{match_type}.csv in the {folder_name} folder appended with Jamaat name"
     )
