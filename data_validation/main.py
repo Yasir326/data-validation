@@ -19,9 +19,8 @@ folder_list = [
 
 
 if __name__ == "__main__":
-    print("🏁 Finding {match_type} between GDPR file and  Master AIMS file")
-
     folder_name, match_type = return_file_and_match_type()
+    print(f"🏁 Finding {match_type} between GDPR file and  Master AIMS file")
     master_aims_file, gdpr_file_csv = configure_master_and_gdpr_files(folder_name)
 
     if folder_name not in folder_list:
